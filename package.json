@@ -5,6 +5,10 @@
   "repository": "ssh://github.com/sinofseven/sample-serverless-cert-twitter",
   "author": "sinofseven <luciferous.development@gmail.com>",
   "license": "MIT",
+  "scripts": {
+    "deploy": "npm install && sls deploy -v",
+    "destroy": "sls remove"
+  },
   "devDependencies": {
     "aws-sdk": "^2.92.0",
     "serverless": "^1.18.1",
