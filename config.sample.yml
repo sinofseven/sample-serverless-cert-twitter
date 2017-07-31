@@ -2,3 +2,6 @@
 twitter:
   consumer_key: xxxxxx
   consumer_secret: yyyyyy
+
+# the name of s3 bucket for putting tmp data
+s3: zzzzzz

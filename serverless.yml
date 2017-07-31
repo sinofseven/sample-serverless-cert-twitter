@@ -1,0 +1,85 @@
+service: sample-cert-twitter
+
+frameworkVersion: ">=1.13.1 <2.0.0"
+
+custom:
+  region: ap-northeast-1
+  stage: dev
+  config: ${file(./config.yml)}
+  remover:
+    buckets:
+      - ${self:custom.config.s3}
+
+provider:
+  name: aws
+  runtime: nodejs6.10
+  region: ${self:custom.region}
+  stage: ${self:custom.stage}
+  timeout: 120
+  memorySize: 256
+  cfLogs: true
+  apiKey: false
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - "xray:PutTraceSegments"
+        - "xray:PutTelemetryRecords"
+      Resource:
+        - "*"
+    - Effect: Allow
+      Action:
+        - "logs:CreateLogGroup"
+        - "logs:CreateLogStream"
+        - "logs:PutLogEvents"
+      Resource:
+        - "arn:aws:logs:*:*:*"
+    - Effect: Allow
+      Action:
+        - "lambda:InvokeFunction"
+        - "lambda:InvokeAsync"
+      Resource:
+        - "*"
+    - Effect: Allow
+      Action:
+        - "s3:*"
+      Resource:
+        - "*"
+
+package:
+  include:
+    - src/**
+    - config.yml
+    - serverless.yml
+
+functions:
+  cert:
+    handler: src/cert.handler
+    events:
+      - http:
+          path: /cert
+          method: get
+          cors: true
+  callback:
+    handler: src/callback.handler
+    environment:
+      S3: ${self:custom.config.s3}
+    events:
+      - http:
+          path: /callback
+          method: get
+          cors: true
+
+resources:
+  Resources:
+    TmpBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:custom.config.s3}
+    CertLambdaFunction:
+      Properties:
+        Environment:
+          Variables:
+            STAGE: ${self:custom.stage}
+            BUCKET: ${self:custom.config.s3}
+            API: 
+              Ref: ApiGatewayRestApi

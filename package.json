@@ -1,0 +1,17 @@
+{
+  "name": "sample-serverless-cert-twitter",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "ssh://github.com/sinofseven/sample-serverless-cert-twitter",
+  "author": "sinofseven <luciferous.development@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "aws-sdk": "^2.92.0",
+    "serverless": "^1.18.1",
+    "serverless-s3-remover": "^0.2.0"
+  },
+  "dependencies": {
+    "js-yaml": "^3.9.1",
+    "oauth": "^0.9.15"
+  }
+}
